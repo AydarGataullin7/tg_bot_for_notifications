@@ -10,12 +10,12 @@ def main():
     load_dotenv()
 
     bot = telegram.Bot(
-        token=os.getenv('TOKEN'),
+        token=os.getenv('TELEGRAM_TOKEN'),
         request=Request(proxy_url='socks5://127.0.0.1:10808')
     )
     url = 'https://dvmn.org/api/long_polling/'
     headers = {
-        "Authorization": os.getenv('AUTHORIZATION_TOKEN')
+        "Authorization": os.getenv('DEVMAN_TOKEN')
     }
 
     timestamp = None
@@ -41,7 +41,7 @@ def main():
                         status = attempt['is_negative']
                         bot.send_message(
                             text=f'Преподаватель проверил работу по уроку: «{lesson_title}!»\nURL: {lesson_url}\n{"К сожалению, в работе есть ошибки" if status else "Преподавателю все понравлось, можно приступать к следующему уроку!"}',
-                            chat_id=os.getenv('CHAT_ID')
+                            chat_id=os.getenv('TG_CHAT_ID')
                         )
 
             elif data['status'] == 'timeout':
