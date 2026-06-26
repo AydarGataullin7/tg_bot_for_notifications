@@ -12,7 +12,7 @@ def main():
 
     bot = telegram.Bot(
         token=os.getenv('TELEGRAM_TOKEN'),
-        request=Request(proxy_url='socks5://127.0.0.1:10808')
+        request=Request(proxy_url=os.getenv('PROXY_URL'))
     )
     url = 'https://dvmn.org/api/long_polling/'
     headers = {

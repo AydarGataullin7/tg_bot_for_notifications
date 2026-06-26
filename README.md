@@ -15,16 +15,18 @@
 В корневой папке проекта создайте файл `.env` и заполните его:
 
 ```txt
-TOKEN=ваш_токен_телеграм_бота
-AUTHORIZATION_TOKEN=Token ваш_токен_демвана
-CHAT_ID=ваш_chat_id_в_телеграме
+TELEGRAM_TOKEN=ваш_токен_телеграм_бота
+DEVMAN_TOKEN=Token ваш_токен_демвана
+TG_CHAT_ID=ваш_chat_id_в_телеграме
+PROXY_URL=адрес_прокси_для_телеграма
 ```
 
 Где взять:
 
-- `TOKEN` — у [BotFather](https://t.me/botfather) в Telegram
-- `AUTHORIZATION_TOKEN` — в личном кабинете на [Девмане](https://dvmn.org) (раздел API)
-- `CHAT_ID` — у бота [@userinfobot](https://t.me/userinfobot) в Telegram
+- `TELEGRAM_TOKEN` — у [BotFather](https://t.me/botfather) в Telegram
+- `DEVMAN_TOKEN` — в личном кабинете на [Девмане](https://dvmn.org) (раздел API)
+- `TG_CHAT_ID` — у бота [@userinfobot](https://t.me/userinfobot) в Telegram
+- `PROXY_URL` — адрес прокси для доступа к Telegram API (например, `socks5://127.0.0.1:10808`). Если прокси не нужен — оставьте пустым.
 
 ### 2. Установите зависимости
 
@@ -48,27 +50,29 @@ request=Request(proxy_url='socks5://127.0.0.1:10808')
 python get_user_reviews.py
 ```
 
-## Пример работы
-
+Пример работы
 При появлении новой проверки бот присылает сообщение:
 
-```
+```text
 Преподаватель проверил работу по уроку: «Отправляем уведомления о проверке работ!»
 URL: https://dvmn.org/modules/chat-bots/lesson/devman-bot/
 К сожалению, в работе есть ошибки
-```
-
 Или, если работа принята:
-
 ```
+
+```text
 Преподаватель проверил работу по уроку: «Отправляем уведомления о проверке работ!»
 URL: https://dvmn.org/modules/chat-bots/lesson/devman-bot/
 Преподавателю все понравилось, можно приступать к следующему уроку!
 ```
 
-## Файлы проекта
+Файлы проекта
+`get_user_reviews.py` — основной скрипт бота
 
-- `get_user_reviews.py` — основной скрипт бота
-- `requirements.txt` — зависимости проекта
-- `.env` — переменные окружения (токены, chat_id)
-- `.gitignore` — список файлов, которые не попадают в репозиторий
+`requirements.txt` — зависимости проекта
+
+`.env` — переменные окружения (токены, chat_id)
+
+`.gitignore` — список файлов, которые не попадают в репозиторий
+
+`README.md` — описание проекта
