@@ -28,13 +28,13 @@ def main():
             response = requests.get(url, headers=headers,
                                     params=params, timeout=5)
             response.raise_for_status()
-            data = response.json()
+            api_response = response.json()
 
-            if data['status'] == 'found':
-                timestamp = data['last_attempt_timestamp']
+            if api_response['status'] == 'found':
+                timestamp = api_response['last_attempt_timestamp']
 
-                if data['new_attempts']:
-                    new_attempt = data['new_attempts']
+                if api_response['new_attempts']:
+                    new_attempt = api_response['new_attempts']
                     for attempt in new_attempt:
                         lesson_title = attempt['lesson_title']
                         lesson_url = attempt['lesson_url']
@@ -44,8 +44,8 @@ def main():
                             chat_id=os.getenv('TG_CHAT_ID')
                         )
 
-            elif data['status'] == 'timeout':
-                timestamp = data['timestamp_to_request']
+            elif api_response['status'] == 'timeout':
+                timestamp = api_response['timestamp_to_request']
         except requests.exceptions.ReadTimeout:
             print('Таймаут, пробуем снова')
             continue
