@@ -26,7 +26,7 @@ def main():
             params['timestamp'] = timestamp
         try:
             response = requests.get(url, headers=headers,
-                                    params=params, timeout=5)
+                                    params=params, timeout=90)
             response.raise_for_status()
             api_response = response.json()
 
@@ -47,7 +47,6 @@ def main():
             elif api_response['status'] == 'timeout':
                 timestamp = api_response['timestamp_to_request']
         except requests.exceptions.ReadTimeout:
-            print('Таймаут, пробуем снова')
             continue
         except requests.exceptions.ConnectionError:
             print('Проверьте соединение')
