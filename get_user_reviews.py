@@ -2,6 +2,7 @@ import requests
 import telegram
 import socks
 import os
+import time
 from telegram.utils.request import Request
 from dotenv import load_dotenv
 
@@ -50,6 +51,7 @@ def main():
             continue
         except requests.exceptions.ConnectionError:
             print('Проверьте соединение')
+            time.sleep(10)
             continue
 
 
