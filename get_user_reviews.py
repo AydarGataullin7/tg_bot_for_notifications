@@ -7,15 +7,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
-
 
 class TelegramLogHandler(logging.Handler):
     def __init__(self, bot_token, chat_id):
@@ -44,12 +35,6 @@ if PROXY_URL:
 else:
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
 
-if TELEGRAM_TOKEN and TG_CHAT_ID:
-    telegram_handler = TelegramLogHandler(TELEGRAM_TOKEN, TG_CHAT_ID)
-    telegram_handler.setLevel(logging.ERROR)
-    telegram_handler.setFormatter(formatter)
-    logger.addHandler(telegram_handler)
-
 
 def process_attempt(attempt):
     lesson_title = attempt['lesson_title']
@@ -67,6 +52,23 @@ def process_attempt(attempt):
 
 
 def main():
+    global logger
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+
+    if TELEGRAM_TOKEN and TG_CHAT_ID:
+        telegram_handler = TelegramLogHandler(TELEGRAM_TOKEN, TG_CHAT_ID)
+        telegram_handler.setLevel(logging.ERROR)
+        telegram_handler.setFormatter(formatter)
+        logger.addHandler(telegram_handler)
+
     logger.info("Бот запущен и начал мониторинг")
 
     url = 'https://dvmn.org/api/long_polling/'
