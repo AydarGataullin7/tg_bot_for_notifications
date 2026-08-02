@@ -58,7 +58,7 @@ def main():
     while True:
         try:
             response = requests.get(url, headers=headers, timeout=90, params={'timestamp': timestamp})
-            if response.status_code == 200:
+            if response.ok:
                 api_response = response.json()
                 if data.get('status') == 'found':
                     for attempt in data.get('new_attempts', []):
