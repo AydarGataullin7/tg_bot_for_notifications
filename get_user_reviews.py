@@ -59,7 +59,7 @@ def main():
         try:
             response = requests.get(url, headers=headers, timeout=90, params={'timestamp': timestamp})
             if response.status_code == 200:
-                data = response.json()
+                api_response = response.json()
                 if data.get('status') == 'found':
                     for attempt in data.get('new_attempts', []):
                         lesson_title = attempt['lesson_title']
