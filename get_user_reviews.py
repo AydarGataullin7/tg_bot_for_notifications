@@ -5,8 +5,6 @@ import requests
 import telegram
 from dotenv import load_dotenv
 
-load_dotenv()
-
 
 class TelegramLogHandler(logging.Handler):
     def __init__(self, bot_token, chat_id):
@@ -24,19 +22,7 @@ class TelegramLogHandler(logging.Handler):
             pass
 
 
-TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-DEVMAN_TOKEN = os.getenv('DEVMAN_TOKEN')
-TG_CHAT_ID = os.getenv('TG_CHAT_ID')
-PROXY_URL = os.getenv('PROXY_URL')
-
-if PROXY_URL:
-    request = telegram.utils.request.Request(proxy_url=PROXY_URL)
-    bot = telegram.Bot(token=TELEGRAM_TOKEN, request=request)
-else:
-    bot = telegram.Bot(token=TELEGRAM_TOKEN)
-
-
-def process_attempt(attempt):
+def process_attempt(attempt, bot, chat_id, logger):
     lesson_title = attempt['lesson_title']
     lesson_url = attempt['lesson_url']
     is_negative = attempt['is_negative']
@@ -47,12 +33,17 @@ def process_attempt(attempt):
         result = 'Преподавателю все понравилось!'
 
     message = f'Проверка работы: {lesson_title}\nURL: {lesson_url}\n{result}'
-    bot.send_message(chat_id=TG_CHAT_ID, text=message)
+    bot.send_message(chat_id=chat_id, text=message)
     logger.info(f"Уведомление отправлено: {lesson_title}")
 
 
 def main():
-    global logger
+    load_dotenv()
+
+    TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+    DEVMAN_TOKEN = os.getenv('DEVMAN_TOKEN')
+    TG_CHAT_ID = os.getenv('TG_CHAT_ID')
+    PROXY_URL = os.getenv('PROXY_URL')
 
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
@@ -62,6 +53,12 @@ def main():
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
+
+    if PROXY_URL:
+        request = telegram.utils.request.Request(proxy_url=PROXY_URL)
+        bot = telegram.Bot(token=TELEGRAM_TOKEN, request=request)
+    else:
+        bot = telegram.Bot(token=TELEGRAM_TOKEN)
 
     if TELEGRAM_TOKEN and TG_CHAT_ID:
         telegram_handler = TelegramLogHandler(TELEGRAM_TOKEN, TG_CHAT_ID)
@@ -89,7 +86,7 @@ def main():
                 continue
 
             for attempt in api_response.get('new_attempts', []):
-                process_attempt(attempt)
+                process_attempt(attempt, bot, TG_CHAT_ID, logger)
 
         except requests.exceptions.ConnectionError:
             logger.error("Ошибка подключения к API Девмана")
