@@ -78,8 +78,8 @@ def main():
             elif response.status_code == 400:
                 logger.warning("Неверный запрос к API Девмана")
 
-        except requests.exceptions.ReadTimeout:
-            logger.warning("Таймаут ожидания ответа от API")
+#        except requests.exceptions.ReadTimeout:
+#           logger.warning("Таймаут ожидания ответа от API")
         except requests.exceptions.ConnectionError:
             logger.error("Ошибка подключения к API Девмана")
             time.sleep(10)
