@@ -40,10 +40,10 @@ def process_attempt(attempt, bot, chat_id, logger):
 def main():
     load_dotenv()
 
-    TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-    DEVMAN_TOKEN = os.getenv('DEVMAN_TOKEN')
-    TG_CHAT_ID = os.getenv('TG_CHAT_ID')
-    PROXY_URL = os.getenv('PROXY_URL')
+    telegram_token = os.getenv('TELEGRAM_TOKEN')
+    devman_token = os.getenv('DEVMAN_TOKEN')
+    tg_chat_id = os.getenv('TG_CHAT_ID')
+    proxy_url = os.getenv('PROXY_URL')
 
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
@@ -54,14 +54,14 @@ def main():
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
-    if PROXY_URL:
-        request = telegram.utils.request.Request(proxy_url=PROXY_URL)
-        bot = telegram.Bot(token=TELEGRAM_TOKEN, request=request)
+    if proxy_url:
+        request = telegram.utils.request.Request(proxy_url=proxy_url)
+        bot = telegram.Bot(token=telegram_token, request=request)
     else:
-        bot = telegram.Bot(token=TELEGRAM_TOKEN)
+        bot = telegram.Bot(token=telegram_token)
 
-    if TELEGRAM_TOKEN and TG_CHAT_ID:
-        telegram_handler = TelegramLogHandler(TELEGRAM_TOKEN, TG_CHAT_ID)
+    if telegram_token and tg_chat_id:
+        telegram_handler = TelegramLogHandler(telegram_token, tg_chat_id)
         telegram_handler.setLevel(logging.ERROR)
         telegram_handler.setFormatter(formatter)
         logger.addHandler(telegram_handler)
@@ -69,7 +69,7 @@ def main():
     logger.info("Бот запущен и начал мониторинг")
 
     url = 'https://dvmn.org/api/long_polling/'
-    headers = {'Authorization': f'Token {DEVMAN_TOKEN}'}
+    headers = {'Authorization': f'Token {devman_token}'}
     timestamp = None
 
     while True:
@@ -86,8 +86,10 @@ def main():
                 continue
 
             for attempt in api_response.get('new_attempts', []):
-                process_attempt(attempt, bot, TG_CHAT_ID, logger)
+                process_attempt(attempt, bot, tg_chat_id, logger)
 
+        except requests.exceptions.ReadTimeout:
+            continue
         except requests.exceptions.ConnectionError:
             logger.error("Ошибка подключения к API Девмана")
             time.sleep(10)
