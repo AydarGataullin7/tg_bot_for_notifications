@@ -75,11 +75,7 @@ def main():
     while True:
         try:
             response = requests.get(url, headers=headers, timeout=90, params={'timestamp': timestamp})
-
-            if not response.ok:
-                if response.status_code == 400:
-                    logger.warning("Неверный запрос к API Девмана")
-                continue
+            response.raise_for_status()
 
             api_response = response.json()
             if api_response.get('status') != 'found':
@@ -94,7 +90,7 @@ def main():
             logger.error("Ошибка подключения к API Девмана")
             time.sleep(10)
         except Exception as e:
-            logger.error(f"Критическая ошибка: {e}", exc_info=True)
+            logger.error(f"Ошибка: {e}", exc_info=True)
             time.sleep(5)
 
 
@@ -104,4 +100,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         logger.info("Бот остановлен вручную")
     except Exception as e:
-        logger.error(f"Необработанная ошибка: {e}", exc_info=True)
+        logger.error(f"Ошибка: {e}", exc_info=True)
