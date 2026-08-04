@@ -40,9 +40,9 @@ def process_attempt(attempt, bot, chat_id, logger):
 def main():
     load_dotenv()
 
-    telegram_token = os.getenv('TELEGRAM_TOKEN')
-    devman_token = os.getenv('DEVMAN_TOKEN')
-    tg_chat_id = os.getenv('TG_CHAT_ID')
+    telegram_token = os.environ['TELEGRAM_TOKEN']
+    devman_token = os.environ['DEVMAN_TOKEN']
+    tg_chat_id = os.environ['TG_CHAT_ID']
     proxy_url = os.getenv('PROXY_URL')
 
     logger = logging.getLogger(__name__)
